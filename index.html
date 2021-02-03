@@ -1,0 +1,26 @@
+<canvas id="viewport" height="100" width="100"></canvas>
+<button id="copy_it" onclick="copy_it()">Copy</button>
+
+<script>
+var canvas = document.getElementById('viewport'),
+context = canvas.getContext('2d');
+
+make_image();
+
+function make_image()
+{
+    base_image = new Image();
+    base_image.src = 'test_image.png';
+    base_image.onload = function(){
+        context.drawImage(base_image, 0, 0, 100, 100);
+    };
+}
+
+function copy_it() {
+    canvas.toBlob(function(blob) { 
+        const item = new ClipboardItem({ "image/png": blob });
+        navigator.clipboard.write([item]);
+        alert("Copied! paste it on paint");
+    });
+}
+</script>
