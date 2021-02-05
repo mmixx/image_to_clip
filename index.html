@@ -1,26 +1,30 @@
-<canvas id="viewport" height="100" width="100"></canvas>
-<button id="copy_it" onclick="copy_it()">Copy</button>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Async Clipboard API Image Demo</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h1>Async Clipboard API Image Demo</h1>
 
-<script>
-var canvas = document.getElementById('viewport'),
-context = canvas.getContext('2d');
+  <section>
+    <button id="copy"><strong>Copy Chrome Logo</strong><br><em>(write to clipboard)</em></button>
+    <button id="paste"><strong>Paste Image on Clipboard</strong><br><em>(read from clipboard)</em></button>
+  </section>
 
-make_image();
+  <h3>Permissions:</h3>
 
-function make_image()
-{
-    base_image = new Image();
-    base_image.src = 'test_image.png';
-    base_image.onload = function(){
-        context.drawImage(base_image, 0, 0, 100, 100);
-    };
-}
+  <section id="permbuttons"></section>
 
-function copy_it() {
-    canvas.toBlob(function(blob) { 
-        const item = new ClipboardItem({ "image/png": blob });
-        navigator.clipboard.write([item]);
-        alert("Copied! paste it on paint");
-    });
-}
-</script>
+  <h3>Image on clipboard:</h3>
+  <image id="image-field" width="42" height="42"></image>
+
+  <h3>Example 'image/png' image to copy:</h3>
+  <div>
+    <image src="./test_image.png" width="42" height="42"></image>
+  </div>
+
+  <div id="toast" hidden></div>
+  <script src="index.js"></script>
+</body>
+</html>
