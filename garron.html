@@ -1,0 +1,108 @@
+
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>clipboard-polyfill</title>
+  <link rel="stylesheet" href="index.css">
+  <script src="clipboard-polyfill.promise.js"></script>
+  <script>
+    // Workaround for:
+    // - IE9 (can't bind console functions directly), and
+    // - Edge Issue #14495220 (referencing `console` without F12 Developer Tools can cause an exception)
+    var infoOrLog = function () {
+      (console.info || console.log).apply(console, arguments);
+    };
+    clipboard.setDebugLog(infoOrLog);
+
+    const imgBytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x0A, 0x08, 0x04, 0x00, 0x00, 0x00, 0x3D, 0x07, 0xE7,
+      0xB8, 0x00, 0x00, 0x00, 0x01, 0x73, 0x52, 0x47, 0x42, 0x00, 0xAE, 0xCE, 0x1C, 0xE9, 0x00, 0x00, 0x00, 0x02, 0x62, 0x4B, 0x47, 0x44, 0x00, 0xFF, 0x87, 0x8F, 0xCC, 0xBF, 0x00, 0x00, 0x00, 0x09,
+      0x70, 0x48, 0x59, 0x73, 0x00, 0x00, 0x0B, 0x13, 0x00, 0x00, 0x0B, 0x13, 0x01, 0x00, 0x9A, 0x9C, 0x18, 0x00, 0x00, 0x00, 0x07, 0x74, 0x49, 0x4D, 0x45, 0x07, 0xDC, 0x03, 0x1B, 0x15, 0x1C, 0x15, 0xF8, 0xD7, 0x04, 0x97, 0x00, 0x00, 0x00, 0x19, 0x49, 0x44, 0x41, 0x54, 0x08, 0xD7, 0x63, 0x64, 0xF8, 0xFF, 0x9F, 0x81, 0x91, 0x01, 0x82, 0x99, 0x10, 0x4C, 0x46, 0x06,
+      0x46, 0x3A, 0xC9, 0x00, 0x00, 0x2B, 0x1C, 0x23, 0x06, 0x17, 0x1A, 0xE1, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82];
+
+    function stringToBlob(type, str) {
+      return new Blob([str], {
+        type: type,
+      });
+    }
+  </script>
+  <style>
+    .editable {
+      min-width: 20px;
+      min-height: 1em;
+      border: 1px solid #AAA;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <a href="https://github.com/lgarron/clipboard-polyfill">clipboard-polyfill</a>
+  </div>
+  <div class="ribbon"></div>
+  <div class="content">
+
+    <h2>Plain Text</h2>
+
+    <button id="plain-copy">Copy text (plain)</button>
+    <span id="plain-copy-result"></span>
+    <script>
+      document.getElementById("plain-copy").addEventListener("click", function () {
+        var resultField = document.getElementById("plain-copy-result");
+
+        clipboard.writeText("This text is plain.").then(function () {
+          resultField.textContent = "success";
+        }, function (err) {
+          resultField.textContent = err;
+        });
+      });
+    </script>
+
+    <h2>Image (PNG)</h2>
+
+    <button id="image-png-copy">Copy image (PNG)</button>
+    <span id="image-png-copy-result"></span>
+    <br>
+    <script>
+      document.getElementById("image-png-copy").addEventListener("click", function () {
+        var resultField = document.getElementById("image-png-copy-result");
+
+        const blob = new Blob([new Uint8Array(imgBytes)], { type: "image/png" });//stringToBlob("text/plain", document.getElementById("markup-dom-copy-source").innerText);
+        const items = [new clipboard.ClipboardItem({
+          "image/png": blob
+        })];
+        clipboard.write(items).then(function () {
+          resultField.textContent = "success";
+        }, function (err) {
+          resultField.textContent = err;
+        });
+      });
+    </script>
+
+    <h2>Paste Text</h2>
+
+    <button id="paste">Paste Text</button>
+    <span id="paste-result"></span>
+    <script>
+      document.getElementById("paste").addEventListener("click", function () {
+        var resultField = document.getElementById("paste-result");
+
+        clipboard.readText().then(function (result) {
+          resultField.textContent = result;
+        }, function (err) {
+          resultField.textContent = err;
+        });
+      });
+    </script>
+
+    <br>
+    <br>
+    <h2>Paste Area</h2>
+    <div contenteditable="true" class="editable"></div>
+  </div>
+
+</body>
+
+</html>
