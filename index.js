@@ -39,11 +39,7 @@ navigator.clipboard.addEventListener('clipboardchange', async e => {
 
 /** The 4 available permissions for Async Clipboard API: */
 const PERMISSIONS = [
-//	{ name: "clipboard-read" },
-//  { name: "clipboard-write" }
-	//{ name: "clipboard-read",  allowWithoutGesture: false },
   { name: "clipboard-read",  allowWithoutGesture: true  },
-  //{ name: "clipboard-write", allowWithoutGesture: false },
   { name: "clipboard-write", allowWithoutGesture: true  }
 ];
 
