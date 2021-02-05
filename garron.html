@@ -68,16 +68,36 @@
     <script>
       document.getElementById("image-png-copy").addEventListener("click", function () {
         var resultField = document.getElementById("image-png-copy-result");
-
-        const blob = new Blob([new Uint8Array(imgBytes)], { type: "image/png" });//stringToBlob("text/plain", document.getElementById("markup-dom-copy-source").innerText);
-        const items = [new clipboard.ClipboardItem({
-          "image/png": blob
-        })];
-        clipboard.write(items).then(function () {
-          resultField.textContent = "success";
-        }, function (err) {
-          resultField.textContent = err;
-        });
+        
+        //const blob = new Blob([new Uint8Array(imgBytes)], { type: "image/png" });//stringToBlob("text/plain", document.getElementById("markup-dom-copy-source").innerText);
+        //const items = [new clipboard.ClipboardItem({
+        //  "image/png": blob
+        //})];
+        //clipboard.write(items).then(function () {
+        //  resultField.textContent = "success";
+        //}, function (err) {
+        //  resultField.textContent = err;
+        //});
+        
+    
+        async function loadBlob(fileName) {
+            const fetched = await fetch(fileName);
+            return await fetched.blob();
+        }
+        
+        const url = './test_image.png';
+        (async() => {
+            const blobInput = await loadBlob(url);
+            console.log(blobInput);
+            const items = [new clipboard.ClipboardItem({
+              "image/png": blobInput
+            })];
+            clipboard.write(items).then(function () {
+              resultField.textContent = "success";
+            }, function (err) {
+              resultField.textContent = err;
+            });
+        })();
       });
     </script>
 
